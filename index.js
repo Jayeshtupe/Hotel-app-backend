@@ -76,6 +76,29 @@ async function deleteHotel(hotelId){
     }
 }
 
+async function getHotelByName(hotelName){
+    try{
+        const hotel = await hotelModels.findOne({name: hotelName})
+        return hotel
+
+    }catch(error){
+        console.log(error)
+    }
+}
+
+app.get("/hotels/hotelByName/:hotelName", async (req, res) => {
+    try{
+        const hotelByName = await getHotelByName(req.params.hotelName)
+        if(hotelByName !=0){
+            res.status(200).json({message: "Hotel found by name.", hotel: hotelByName})
+        }else{
+            res.status(404).json({error: "Hotel not found."})
+        }
+    }catch(error){
+        res.status(500).json({error: "Failed to get hotel details by name."})
+    }
+})
+
 app.delete("/hotels/:hotelId", async (req, res) => {
     try{
         const deletedHotel = await deleteHotel(req.params.hotelId)
